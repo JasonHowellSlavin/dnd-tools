@@ -1,0 +1,29 @@
+{
+  "name": "node-docker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "nodemon": "^1.19.4",
+    "path": "^0.12.7",
+    "plotly.js": "1.45.3",
+    "react-plotly.js": "2.3.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "nodemon --max-old-space-size=8192 server.js",
+    "start": "node --max-old-space-size=8192 server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run dev-server\" \"npm run client\""
+  },
+  "author": "",
+  "license": "ISC"
+}
