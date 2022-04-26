@@ -1,5 +1,6 @@
 const mysql = require('mysql');
-const stats = require('./apex-stats');
+const events = require('./sample-events');
+const factions = require('./sample-factions');
 
 const rootConnection = mysql.createConnection({
     host: '127.0.0.1',
@@ -9,36 +10,52 @@ const rootConnection = mysql.createConnection({
 
 rootConnection.connect();
 
-rootConnection.query('CREATE DATABASE GameStats', (error, results, fields) => {
+rootConnection.query('CREATE DATABASE ReputationTracker', (error, results, fields) => {
     if (error) throw error;
-    console.log('DB "Users" created');
+    console.log('DB "ReputationTracker" created');
 });
 
-rootConnection.changeUser({database: 'GameStats'}, (error) => {
+rootConnection.changeUser({database: 'ReputationTracker'}, (error) => {
     if (error) throw error;
 })
 
-rootConnection.query('CREATE TABLE Users (user_id int PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255), password VARCHAR(255), recoveryHash VARCHAR(255))',
+rootConnection.query('CREATE TABLE Games (game_id int PRIMARY KEY NOT NULL AUTO_INCREMENT, title VARCHAR(255))',
  (error, results, fields) => {
     if (error) throw error;
-    console.log('Table Users created');
+    console.log('Table Games created');
 });
 
-rootConnection.query('CREATE TABLE ApexStats (ID int AUT_INCRMENET PRIMARY KEY, user int, kills int, damage int, win boolean, place int, date DATE, time TIME, FOREIGN KEY(user) REFERENCES Users(user_id) ON DELETE CASCADE)',
+rootConnection.query('CREATE TABLE Factions (faction_id int PRIMARY KEY NOT NULL AUTO_INCREMENT, assoc_game_id int, title VARCHAR(255), score int, FOREIGN KEY(assoc_game_id) REFERENCES Games(game_id) ON DELETE CASCADE)',
  (error, results, fields) => {
     if (error) throw error;
-    console.log('Table ApexStats created');
+    console.log('Table Factions created');
 });
 
-rootConnection.query('INSERT INTO Users(email, password, recoveryHash) VALUES ("slavin.jhs@gmail.com", "raspberry", null)', (err) => {
+rootConnection.query('CREATE TABLE Events (event_id int PRIMARY KEY NOT NULL AUTO_INCREMENT, faction int, summary VARCHAR(255), description VARCHAR(511), score int, FOREIGN KEY(faction) REFERENCES Factions(faction_id) ON DELETE CASCADE)',
+    (error, results, fields) => {
+        if (error) throw error;
+        console.log('Table Factions created');
+    });
+
+rootConnection.query('INSERT INTO Games(title) VALUES ("The Best Ever!")', (err) => {
     if (err) throw err;
     console.log('updated users table');
 });
 
-stats.forEach((stat) => {
-    console.log(stat);
-    rootConnection.query('INSERT INTO ApexStats(user, kills, damage, win, place, date, time) VALUES (?, ?, ?, ?, ?, ?, CURTIME())',
-    stat,
+factions.forEach((faction) => {
+    console.log(faction);
+    rootConnection.query('INSERT INTO Factions(assoc_game_id, title, score) VALUES (?, ?, ?)',
+        faction,
+        (err) => {
+            if (err) throw err;
+            console.log('updated factions table');
+    });
+})
+
+events.forEach((event) => {
+    console.log(event);
+    rootConnection.query('INSERT INTO Events(faction, summary, description, score) VALUES (?, ?, ?, ?)',
+    event,
     (err) => {
         if (err) throw err;
         console.log('updated stats table');

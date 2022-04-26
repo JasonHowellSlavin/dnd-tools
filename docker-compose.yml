@@ -3,7 +3,7 @@ version: '3'
 services:
 
   mysql:
-    container_name: node-docker_mysql_1
+    container_name: node-docker_mysql_dnd-tools
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: example
@@ -12,6 +12,6 @@ services:
     ports:
       - "3306:3306"
     volumes:
-        - apex-stats-data:/var/lib/mysql
+        - dnd-tools-data:/var/lib/mysql
 volumes:
-    apex-stats-data:
+    dnd-tools-data:
